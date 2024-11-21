@@ -3,6 +3,49 @@
 #include <pthread.h>
 #include <stdlib.h>
 
+//---------------Recipes-------------------------------------
+struct Cookies{
+	bool hasFlour;
+	bool hasSugar;
+	bool hasMilk;
+	bool hasButter;
+};
+
+struct Pancakes{
+	bool hasFlour;
+	bool hasSugar;
+	bool hasBakingSoda;
+	bool hasSalt;
+	bool hasEgg;
+	bool hasMilk;
+	bool hasButter;
+};
+
+struct PizzaDough{
+	bool hasSugar;
+	bool hasSalt;
+	bool hasYeast;
+};
+
+struct SoftPretzals{
+	bool hasFlour;
+	bool hasSugar;
+	bool hasSalt;
+	bool hasYeast;
+	bool hasBakingSoda;
+	bool hasEgg;
+};
+
+
+struct CinnnamonRolls{
+	bool hasFlour;
+	bool hasSugar;
+	bool hasSalt;
+	bool hasButter;
+	bool hasEgg;
+	bool hasCinnamon;
+	
+};
 //---------------INGREDIENTS/TOOLS STUFF---------------------
 
 
