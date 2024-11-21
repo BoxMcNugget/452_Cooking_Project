@@ -3,58 +3,58 @@
 #include <pthread.h>
 #include <stdlib.h>
 	
-
-
-enum INGREDIENTS {
-	FLOUR,
-	SUGAR,
-	YEAST,
-	BAKING_SODA,
-	SALT,
-	CINNAMON,
-	EGGS,
-	MILK,
-	BUTTER
+enum Ingredient {
+	FLOUR,				//0
+	SUGAR,				//1
+	YEAST,				//2
+	BAKING_SODA,		//3
+	SALT,				//4
+	CINNAMON,			//5
+	EGGS,				//6
+	MILK,				//7
+	BUTTER				//8
 };
 
 //----------------------RECIPIES-----------------------------
 struct Cookies{
-		
+	enum Ingredient flour;
+	enum Ingredient sugar;
+	enum Ingredient milk;
+	enum Ingredient butter;
+}
 
-	bool flour;
-	bool sugar;
-	bool milk;
-	bool butter;
-}
 struct Pancakes{
-	bool flour;
-	bool sugar;
-	bool bakingSoda;
-	bool salt;
-	bool eggs;
-	bool milk;
-	bool butter;
+	enum Ingredient flour;
+	enum Ingredient sugar;
+	enum Ingredient bakingSoda;
+	enum Ingredient salt;
+	enum Ingredient egg;
+	enum Ingredient milk;
+	enum Ingrdeient butter;
 }
+
 struct HomemadePizzaDough{
-	bool yeast;
-	bool sugar;
-	bool salt;
+	enum Ingredient yeast;
+	enum Ingredient sugar;
+	enum Ingredient salt;	
 }
+
 struct SoftPretzel{
-	bool flour;
-	bool sugar;
-	bool salt;
-	bool yeast;
-	bool bakingSoda; 
-	bool egg;
+	enum Ingredient flour;
+	enum Ingredient sugar;
+	enum Ingredient salt;
+	enum Ingredient yeast;
+	enum Ingredient bakingSoda;
+	enum Ingredient egg;
 }
+
 struct CinnamonRolls{
-	bool flour;
-	bool sugar;
-	bool salt;
-	bool butter;
-	bool eggs;
-	bool cinnamon;
+	enum Ingredient flour;
+	enum Ingredient sugar;
+	enum Ingredient salt;
+	enum Ingredient butter;
+	enum Ingredient eggs;
+	enum Ingredient cinnamon;
 }
 
 //------------------SHARED MEMORY STUFF----------------------
@@ -135,7 +135,7 @@ void* baker (void* arg){
 
 }
 //-------------------------MAIN------------------------------
-	struct Cookies *cookieRecipe;
+	struct Cookies *cookieRecipe = {FLOUR, SUGAR, MILK, BUTTER};
 	struct Pancakes *pancakesRecipe;
 	struct HomeMadePizzaDough *pizzaRecipe;
 	struct SoftPretzel *pretzelRecipe;
