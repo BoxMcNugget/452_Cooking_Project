@@ -23,7 +23,7 @@ struct Recipe recipes[] = {
 
 //------------------SHARED RESOURCES----------------------
 sem_t semPantry, semFridge[2], semMixer, semOven, semBowl, semSpoon;
-
+pthread_mutex_t ramsiedLock = PTHREAD_MUTEX_INITIALIZER;
 // variable to keep track of recipies
 int numRecipes = sizeof(recipes) / sizeof(struct Recipe);
 
@@ -84,7 +84,14 @@ void* baker(void* arg) {
         sem_wait(&semOven);
         simulate_task("Baking", bakerId, recipe.name, recipe.bakingTime);
         sem_post(&semOven);
-
+		
+		// Ramsied scenario
+        if (rand() % 10 == 0) { // 10% chance of being Ramsied
+            pthread_mutex_lock(&ramsiedLock);
+            printf("\033[1;31mBaker %d: Got Ramsied! Restarting %s.\033[0m\n", bakerId, recipe.name);
+            pthread_mutex_unlock(&ramsiedLock);
+            recipeIndex--; // Restart the current recipe
+        }
         printf("\033[%dmBaker %d: Finished recipe '%s'.\033[0m\n", 
                31 + bakerId % 7, bakerId, recipe.name);
     }
