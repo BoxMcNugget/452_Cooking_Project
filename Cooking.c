@@ -2,96 +2,64 @@
 #include <semaphore.h>
 #include <pthread.h>
 #include <stdlib.h>
-	
 
 
-enum INGREDIENTS {
-	FLOUR,
-	SUGAR,
-	YEAST,
-	BAKING_SODA,
-	SALT,
-	CINNAMON,
-	EGGS,
-	MILK,
-	BUTTER
-};
 
 //----------------------RECIPIES-----------------------------
-struct Cookies{
-		
+	
+// Define what a recipe is 
+struct Recipe{
+	// recipe name
+	const char* name;
 
-	bool flour;
-	bool sugar;
-	bool milk;
-	bool butter;
-}
-struct Pancakes{
-	bool flour;
-	bool sugar;
-	bool bakingSoda;
-	bool salt;
-	bool eggs;
-	bool milk;
-	bool butter;
-}
-struct HomemadePizzaDough{
-	bool yeast;
-	bool sugar;
-	bool salt;
-}
-struct SoftPretzel{
-	bool flour;
-	bool sugar;
-	bool salt;
-	bool yeast;
-	bool bakingSoda; 
-	bool egg;
-}
-struct CinnamonRolls{
-	bool flour;
-	bool sugar;
-	bool salt;
-	bool butter;
-	bool eggs;
-	bool cinnamon;
+	// pantry and correlating index
+	bool pantry[6];
+	//Flour		1
+	//Sugar		2
+	//Yeast		3
+	//Baking Sode	4
+	//Salt		5
+	//Cinnamon	6
+
+	// fridge and correlating index
+	bool fridge[3];
+	//Eggs 		1
+	//Milk 		2
+	//Butter	3
 }
 
-//------------------SHARED MEMORY STUFF----------------------
-struct pantryData{
-	int flour 	= 1;
-	int sugar 	= 2;
-	int yeast 	= 3;
-	int bakingSoda 	= 4;
-	int salt 	= 5;
-	int cinnamon 	= 6;
-}
+struct Recipe recipes[] = {
+	// setting the recipies to tell what ingredients are needed
+	//{name ,{pantry bool}, {fridge bool}}
 
-struct fridgeData{
-	int Eggs 	= 7;
-	int Milk 	= 8;
-	int Butter 	= 9;
+	{"Cookies", {true, true, false, false, false, false}, {false, true, true}}
+	{"Pancakes", {true, true, false, true, true, false}, {true, true, true}}
+	{"Homemade Pizza Dough", {false, true, true, false, false, false}, {false, false, false}}
+	{"Soft Pretzles", {true, true, true, false, true, false}, {true, false, false}}
+	{"Cinnamon Rolls", {true, true, true, false, false, true}, {true, false, true}}
 }
 
 //-------------------SEMAPHORE STUFF-------------------------
+// declaring semaphores
 sem_t semPantry;
-sem_t semFridge;
+sem_t semFridge[2];
 sem_t semMixer;
 sem_t semBowl;
 sem_t semSpoon;
 sem_t semOven;
 
+//------------------HELPER FUNCTIONS-------------------------
+void grabPantryIngredient(int bakerId, int pantryIndex) {
+	// wait for pantry
+	sem_wait(&semPantry);
+	
+	
+	
+	// release the pantry
+	sem_post(&semPantry)
+}
 
-// signals for semaphores
-//struct sembuf using = {0, -1, SEM_UNDO};
-//struct sembuf done = {0, +1, SEM_UNDO};
 
-//sem_init(&semPantry, 0, 1) // 1 pantry
-//sem_init(&semFridge, 0, 2) // 2 fridges
-//sem_init(&semMixer, 0, 2) // 2 mixers
-//sem_init(&semBowl, 0, 3) // 3 bowls
-//sem_init(&semSpoon, 0, 5) // 5 spoons
-//sem_init(&semOven, 0, 1) // 1 Oven
 
 //---------------------THREAD STUFF--------------------------
 //location where the new thread is stored (I think the ids of the bakers)
@@ -135,7 +103,7 @@ void* baker (void* arg){
 
 }
 //-------------------------MAIN------------------------------
-	struct Cookies *cookieRecipe;
+	struct Cookies *cookieRecipe = {1, 2, 8, 9};
 	struct Pancakes *pancakesRecipe;
 	struct HomeMadePizzaDough *pizzaRecipe;
 	struct SoftPretzel *pretzelRecipe;
