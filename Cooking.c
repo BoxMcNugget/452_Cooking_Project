@@ -52,9 +52,13 @@ sem_t semBowl;
 sem_t semSpoon;
 sem_t semOven;
 
+pthread_mutex_t ramsiedLock = PTHREAD_MUTEX_INITIALIZER;
+
 //------------------HELPER FUNCTIONS-------------------------
 void doTask(const char* task, int bakerId, const char* recipe, int waitTime){
+	// print out the baker, task, and recipe for updaating the viewer
 	printf("\033[%dmBaker %d: %s %s \n",31 + bakerId % 7, bakerId, task, recipe);
+	// sleep to simulate the task
 	usleep(waitTime * 1000);
 }
 
@@ -62,7 +66,7 @@ void grabPantryIngredient(int bakerId, int pantryIndex) {
 	// wait for pantry
 	sem_wait(&semPantry);
 	// simulate doing a task
-	doTask("Grabbing ingredient from pantry", bakerId, "", 500);
+	doTask("Grabbing ingredient from pantry", bakerId, "", 250);
 	// release the pantry
 	sem_post(&semPantry);
 }
@@ -71,7 +75,7 @@ void grabFridgeIngredient(int bakerId, int fridgeIndex) {
 	// wait for fridge
 	sem_wait(&semPantry);
 	// simulate doing a task
-	doTask("Grabbing ingredient from fridge", bakerId, "", 500);
+	doTask("Grabbing ingredient from fridge", bakerId, "", 250);
 	// release the fridge
 	sem_post(&semPantry);
 }
@@ -117,7 +121,7 @@ void* baker (void* arg){
 		sem_wait(&semMixer);
 		
 		// mix ingredients once all three are collected
-		doTask("Mixing ingredients for", bakerId, recipe.name, 1000);
+		doTask("Mixing ingredients for", bakerId, recipe.name, 750);
 		
 		//release bowl
 		sem_post(&semMixer);
@@ -129,12 +133,20 @@ void* baker (void* arg){
 		//wait for the oven to be free
 		sem_wait(&semOven);
 		//simulate the baking
-		doTask("Baking the", bakerId, recipe.name, 3000);
+		doTask("Baking the", bakerId, recipe.name, 2000);
 		//release the oven
 		sem_post(&semOven);
 
 		//print that baker has finished the recipe
 		printf("\033[%dmBaker %d: Finished recipe %s \n",31 + bakerId % 7, bakerId, recipe.name);
+	        
+
+		if (rand() % 10 == 0) { // 10% chance of being Ramsied
+			pthread_mutex_lock(&ramsiedLock);
+			printf("\033[1;31mBaker %d: Got Ramsied! Restarting %s.\033[0m\n", bakerId, recipes[recipeNum].name);
+			pthread_mutex_unlock(&ramsiedLock);
+			recipeNum--; // Restart the current recipe
+	        }
 	}
 	
 	// after all the recipes have been cooked print finished
